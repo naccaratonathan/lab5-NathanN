@@ -3,8 +3,8 @@ import java.util.Scanner;
 
 public class ConsoleUI {
 
-    private Scanner in;
-    private PrintStream outStream;
+    private static Scanner in;
+    private static PrintStream outStream;
 
     public ConsoleUI(Scanner in, PrintStream out) {
         this.in = in;
@@ -19,7 +19,38 @@ public class ConsoleUI {
      * @param question The question to ask
      * @return The number of tries the user takes to provide the correct answer
      */
+    private static int tries = 1;
+
+    public int getTries(){
+        return tries;
+    }
+    public void setTries(int tries){
+        this.tries = tries;
+    }
+
     // TODO: Implement askQuestion
+    public static int askQuestion(Question question){
+        tries = 1;
+        println(question.getPrompt());
+        String userInput = in.next();
+        while (true) {
+            if (question.parseAnswer(userInput).equals(question.CORRECT_ANSWER)) {
+                return tries;
+            } else if (question.parseAnswer(userInput).equals(question.INCORRECT_ANSWER)) {
+                while (question.parseAnswer(userInput).equals(question.INCORRECT_ANSWER)) {
+                    tries++;
+                    println("Incorrect. Try again.");
+                    userInput = in.nextLine();
+                }
+            } else {
+                tries++;
+                println("Invalid answer");
+                println(question.getValidityMessage());
+            }
+            userInput = in.nextLine();
+
+        }
+    }
 
     /**
      * Asks the user the given set of questions
@@ -27,7 +58,7 @@ public class ConsoleUI {
      * @return The nth number in the returned array is the number of tries it took for the user to give the
      *      correct answer for the nth question.
      */
-    public int[] askQuestions(Question[] questions) {
+    public static int[] askQuestions(Question[] questions) {
         int[] results = new int[questions.length];
 
         int i = 0;
@@ -45,7 +76,7 @@ public class ConsoleUI {
      * @param prompt The prompt to present to the user
      * @return True if the user response 'y', false if they respond 'n'
      */
-    public boolean confirm(String prompt) {
+    public static boolean confirm(String prompt) {
 
         while ( true ) {
             outStream.print(prompt + "(y/n) ");
@@ -56,8 +87,6 @@ public class ConsoleUI {
                 return true;
             } else if ( response.equals("n") ) {
                 return false;
-            } else {
-                outStream.println("Invalid input");
             }
         }
     }
@@ -66,7 +95,7 @@ public class ConsoleUI {
      * Print the given line to the console
      * @param line The line to print
      */
-    public void println(String line) {
+    public static void println(String line) {
         outStream.println(line);
     }
 
@@ -83,22 +112,32 @@ public class ConsoleUI {
      * @param results The results to print.
      */
     // TODO: implement printResults
+    public void printResult(int [] results){
+        for (int i =0; i < results.length;i++){
+            if (results[i] == 1){
+                println("Correct");
+            }
+            else {
+                println(results[i] + " tries");
+            }
+        }
+    }
 
     /**
      * Prompt the user for their name
      * @return The name the user entered
      */
-    public String promptForName() {
+    public static String promptForName() {
         return promptForString("What is your name? ");
     }
 
     /**
      * Prompt the user for a string
-     * @param prompt A prompt message to display before requesting user input
+     * @param questionPrompt A prompt message to display before requesting user input
      * @return The text entered by the user in response to the prompt
      */
-    public String promptForString(String prompt) {
-        outStream.print(prompt);
+    public static String promptForString(String questionPrompt) {
+        outStream.print(questionPrompt);
         return in.nextLine();
     }
 }

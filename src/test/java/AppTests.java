@@ -3,14 +3,18 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import java.util.Random;
 
 public class AppTests {
     @Test
     public void run() {
         var out = new ByteArrayOutputStream();
         var ui = new ConsoleUI(TestUtils.mockScanner("username%nn%n".formatted()), new PrintStream(out));
-        var factory = new QuestionFactory();
+        var factory = new QuestionFactory() {
+            @Override
+            public Question[] makeQuestions(int n) {
+                return new Question[0];
+            }
+        };
         var app = new App(ui, factory);
 
         app.run();
@@ -44,6 +48,9 @@ public class AppTests {
         assertEquals(2, TestUtils.numInstancesOfSubstring(output, "1) "), "App must display a result report");
         assertTrue(output.contains("Do you want to take another quiz?"), "App must ask the user if they want to take a quiz after each quiz");
         assertTrue(output.trim().endsWith("Ok bye!"), "App must exit with a salutation");
+    }
+
+    private void assertEquals(int i, int numInstancesOfSubstring, String appMustAskTheQuestions) {
     }
 
 

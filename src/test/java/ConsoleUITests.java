@@ -77,7 +77,7 @@ public class ConsoleUITests {
     public void printResults() {
         var ui = new ConsoleUI(TestUtils.mockScanner(""), new PrintStream(out));
 
-        ui.printResults(new int[] { 1, 2, 3 });
+        ui.printResult(new int[] { 1, 2, 3 });
 
         assertEquals("1) ✓%n2) 2 tries%n3) 3 tries%n".formatted(), out.toString());
     }
@@ -85,7 +85,7 @@ public class ConsoleUITests {
     @Test
     public void askQuestion_worksOnCorrectAnswer() {
         var ui = new ConsoleUI(TestUtils.mockScanner("4"), new PrintStream(out));
-        var q = mockQuestion("prompt", "", new String[]{Question.ANSWER_CORRECT});
+        var q = mockQuestion("prompt", "", new String[]{Question.CORRECT_ANSWER});
         int tries = ui.askQuestion(q);
 
         var output = out.toString();
@@ -99,7 +99,7 @@ public class ConsoleUITests {
     public void askQuestion_worksOnIncorrectAnswers() {
         String[] inputs = { "5", "5", "4" };
         var ui = new ConsoleUI(TestUtils.mockScanner(inputs), new PrintStream(out));
-        var q = mockQuestion("prompt", "", new String[] { Question.ANSWER_INCORRECT, Question.ANSWER_INCORRECT, Question.ANSWER_CORRECT });
+        var q = mockQuestion("prompt", "", new String[] { Question.INCORRECT_ANSWER, Question.INCORRECT_ANSWER, Question.CORRECT_ANSWER });
         int tries = ui.askQuestion(q);
 
         var output = out.toString();
@@ -114,7 +114,7 @@ public class ConsoleUITests {
         String[] inputs = { "a", "a", "4" };
         var ui = new ConsoleUI(TestUtils.mockScanner(inputs), new PrintStream(out));
         String validityMessage = "validity prompt";
-        var q = mockQuestion("prompt", validityMessage, new String[] { Question.ANSWER_INVALID, Question.ANSWER_INVALID, Question.ANSWER_CORRECT });
+        var q = mockQuestion("prompt", validityMessage, new String[] { Question.INVALID_ANSWER, Question.INVALID_ANSWER, Question.CORRECT_ANSWER });
         int tries = ui.askQuestion(q);
 
         var output = out.toString();

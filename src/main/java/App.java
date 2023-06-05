@@ -1,3 +1,5 @@
+import java.util.Random;
+
 public class App {
 
     private ConsoleUI ui;
@@ -7,6 +9,22 @@ public class App {
         this.questionFactory = factory;
         this.ui = ui;
     }
+    public void run(){
+        String name = ui.promptForName();
+        ui.println("Hello, " + name);
+        ui.println("Would you like to take a quiz?");
+        boolean confirm = ui.confirm("Enter 'y' for Yes or 'n' for No");
+
+        while (confirm) {
+            Question[] questions = questionFactory.makeQuestions(5,new Random());
+            int[] results = ui.askQuestions(questions);
+            ui.printResult(results);
+            ui.println("Do you want to take another quiz?");
+            confirm = ui.confirm("Enter 'y' for Yes or 'n' for No");
+        }
+        ui.println("Ok, bye!");
+    }
+
 
     /**
      * Run the app!
